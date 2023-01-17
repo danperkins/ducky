@@ -20,7 +20,7 @@ export const QueryEditor = (props: {
         size="sm"
       />
       <Button
-        mt={8}
+        mt={2}
         colorScheme="yellow"
         onClick={() => props.onSubmitQuery(sqlQuery)}
       >

@@ -6,11 +6,8 @@ import {
   Progress,
   Alert,
   AlertIcon,
-  Tabs,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
+  HStack,
+  Button,
 } from "@chakra-ui/react";
 
 import { Loader } from "../components/Loader/Loader";
@@ -41,6 +38,10 @@ export const Shell = () => {
         .then(setConnection);
     }
   }, [db]);
+
+  const [dataVizState, setDataVizState] = React.useState<"table" | "scatter">(
+    "table"
+  );
 
   if (!connection || !db.value) {
     return <Loader />;
@@ -74,20 +75,34 @@ export const Shell = () => {
           </Alert>
         )}
 
-        <Tabs variant="soft-rounded" colorScheme="yellow">
-          <TabList>
-            <Tab>Table</Tab>
-            <Tab>Scatter</Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <ResultsTable data={lastQueryResults} />
-            </TabPanel>
-            <TabPanel>
-              <ScatterPlot data={lastQueryResults} />
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+        <HStack>
+          <Button
+            size="sm"
+            key="table"
+            variant="solid"
+            colorScheme="yellow"
+            backgroundColor={
+              dataVizState === "table" ? "yellow.500" : "yellow.300"
+            }
+            onClick={() => setDataVizState("table")}
+          >
+            Table
+          </Button>
+          <Button
+            size="sm"
+            key="scatter"
+            variant="solid"
+            colorScheme="yellow"
+            backgroundColor={
+              dataVizState === "scatter" ? "yellow.500" : "yellow.300"
+            }
+            onClick={() => setDataVizState("scatter")}
+          >
+            Scatter
+          </Button>
+        </HStack>
+        {dataVizState === "table" && <ResultsTable data={lastQueryResults} />}
+        {dataVizState === "scatter" && <ScatterPlot data={lastQueryResults} />}
       </Box>
     </Box>
   );
