@@ -1,14 +1,39 @@
 import * as React from "react";
-import { Box, Textarea, Button } from "@chakra-ui/react";
+import { Box, Textarea, Button, IconButton } from "@chakra-ui/react";
+import { AsyncDuckDB, DuckDBDataProtocol } from "@duckdb/duckdb-wasm";
+import { AddFileButton } from "../AddFileButton/AddFileButton";
 
 /**
  * A Simple text input and button that will invoke the `onSubmitQuery`
  * prop with the value of the input
  */
-export const QueryEditor = (props: {
+export const QueryEditor = ({
+  db,
+  onSubmitQuery,
+}: {
   onSubmitQuery: (query: string) => void;
+  db: AsyncDuckDB;
 }) => {
   const [sqlQuery, setSqlQuery] = React.useState<string>("");
+
+  const onCreateTableFromFile = (tableName: string, file: File) => {
+    const tempLabel = `temp${Date.now()}`;
+    return db
+      .registerFileHandle(
+        tempLabel,
+        file,
+        DuckDBDataProtocol.BROWSER_FILEREADER,
+        true
+      )
+      .catch((err) => {
+        console.warn(err);
+      })
+      .then(() => {
+        onSubmitQuery(
+          `CREATE TABLE ${tableName} AS SELECT * FROM read_parquet('${tempLabel}');`
+        );
+      });
+  };
   return (
     <Box>
       <Textarea
@@ -19,13 +44,21 @@ export const QueryEditor = (props: {
         placeholder="Type your query here"
         size="sm"
       />
-      <Button
-        mt={2}
-        colorScheme="yellow"
-        onClick={() => props.onSubmitQuery(sqlQuery)}
-      >
-        RUN
-      </Button>
+      <Box mt={2} display="flex" justifyContent="space-between">
+        <Button colorScheme="yellow" onClick={() => onSubmitQuery(sqlQuery)}>
+          RUN
+        </Button>
+
+        <AddFileButton
+          colorScheme="yellow"
+          submitText="Create Table from Parquet File"
+          fileInputProps={{
+            accept: ".parquet",
+          }}
+          labelPlaceholder="New Table Name"
+          onAddFile={onCreateTableFromFile}
+        />
+      </Box>
     </Box>
   );
 };

@@ -12,6 +12,7 @@ const pickedFile: File = letUserPickFile();
 await db.registerFileHandle("local.parquet", pickedFile);
 ```
 - `<Tabs />` from Chakra UI was temporarily abandoned and replaced with simple Button/state/conditional component render because the `Tab` related components introduced a really deep DOM structure that made it hard to keep the ScatterPlot auto resize functionality
+- Improve accessibility around core components
 
 ## pages/Shell
 - Improve UX by refactoring loading/error content to prevent it from repositioning other components

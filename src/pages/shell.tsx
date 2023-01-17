@@ -15,6 +15,7 @@ import { useSqlQuery } from "../hooks/useSqlQuery/useSqlQuery";
 import { QueryEditor } from "../components/QueryEditor/QueryEditor";
 import { ResultsTable } from "../components/ResultsTable/ResultsTable";
 import { ScatterPlot } from "../visualizations/ScatterPlot/ScatterPlot";
+import { DuckDBDataProtocol } from "@duckdb/duckdb-wasm";
 
 /**
  * The 'Shell' page shows a SQL input area and displays the results from
@@ -57,7 +58,7 @@ export const Shell = () => {
       display="flex"
       flexDir="column"
     >
-      <QueryEditor onSubmitQuery={runQuery} />
+      <QueryEditor onSubmitQuery={runQuery} db={db.value} />
       <Box mt={8} flex={1} flexDir="column" display="flex">
         {queryState.state === "loading" && (
           <Progress
