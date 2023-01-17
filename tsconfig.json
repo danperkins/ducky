@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./src",
+        "outDir": "./build/ts/",
+        "target": "es5",
+        "module": "es2020",
+        // TODO(ankoh): Upgrade node resolution to node12 for exports once typescript 4.6.0 is out
+        // https://www.typescriptlang.org/docs/handbook/esm-node.html
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "esModuleInterop": true,
+        "downlevelIteration": true,
+        "strict": true,
+        "jsx": "react",
+        // This used to include 'emscripten' and 'jasmine'
+        "types": ["node"],
+        "plugins": [{ "name": "typescript-plugin-css-modules" }],
+        "lib": ["es6", "es2020", "dom"]
+    },
+    "exclude": ["./test/**/*"],
+    "include": ["./src/**/*", "./types/*.d.ts"]
+}
