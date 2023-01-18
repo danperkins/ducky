@@ -57,18 +57,21 @@ export const Shell = () => {
       overflow="auto"
       display="flex"
       flexDir="column"
+      position="relative"
     >
+      {queryState.state === "loading" && (
+        <Progress
+          isIndeterminate
+          position="absolute"
+          top={0}
+          left={0}
+          width="100%"
+          colorScheme="yellow"
+          size="md"
+        />
+      )}
       <QueryEditor onSubmitQuery={runQuery} db={db.value} />
       <Box mt={8} flex={1} flexDir="column" display="flex">
-        {queryState.state === "loading" && (
-          <Progress
-            isIndeterminate
-            hasStripe
-            colorScheme="yellow"
-            size="md"
-            mb={8}
-          />
-        )}
         {queryState.state === "error" && (
           <Alert mb={8} status="error">
             <AlertIcon />

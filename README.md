@@ -14,4 +14,6 @@ Below is a preview of the current functionality:
 - Issue queries and view results via table
 - Use ScatterPlot to visualize results
 
+Taxi data available at [nyc.gov](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page)
+
 ![Preview](/ducky.gif)
