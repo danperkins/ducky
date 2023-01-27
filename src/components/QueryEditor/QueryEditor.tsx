@@ -16,21 +16,33 @@ export const QueryEditor = ({
 }) => {
   const [sqlQuery, setSqlQuery] = React.useState<string>("");
 
-  const onCreateTableFromFile = (tableName: string, file: File) => {
+  const createTableFromFiles = (tableName: string, files: FileList) => {
     const tempLabel = `temp${Date.now()}`;
-    return db
-      .registerFileHandle(
-        tempLabel,
-        file,
-        DuckDBDataProtocol.BROWSER_FILEREADER,
-        true
+
+    const allFiles: { file: File; label: string }[] = [];
+    for (let i = 0; i < files.length; i++) {
+      allFiles.push({ file: files.item(i)!, label: i + tempLabel });
+    }
+
+    return Promise.all(
+      allFiles.map((fileData) =>
+        db.registerFileHandle(
+          fileData.label,
+          fileData.file,
+          DuckDBDataProtocol.BROWSER_FILEREADER,
+          true
+        )
       )
+    )
       .catch((err) => {
         console.warn(err);
       })
       .then(() => {
+        const fileList = allFiles
+          .map((fileData) => `'${fileData.label}'`)
+          .join(", ");
         onSubmitQuery(
-          `CREATE TABLE ${tableName} AS SELECT * FROM read_parquet('${tempLabel}');`
+          `CREATE TABLE ${tableName} AS SELECT * FROM read_parquet([${fileList}]);`
         );
       });
   };
@@ -56,7 +68,7 @@ export const QueryEditor = ({
             accept: ".parquet",
           }}
           labelPlaceholder="New Table Name"
-          onAddFile={onCreateTableFromFile}
+          onAddFiles={createTableFromFiles}
         />
       </Box>
     </Box>
