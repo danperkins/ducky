@@ -4,15 +4,15 @@ import { DataType } from "apache-arrow";
 
 type QueryState =
   | {
-      state: "loading";
-    }
+    state: "loading";
+  }
   | {
-      state: "idle";
-    }
+    state: "idle";
+  }
   | {
-      state: "error";
-      error: Error;
-    };
+    state: "error";
+    error: Error;
+  };
 
 export type SqlResults = {
   /**
@@ -73,6 +73,9 @@ export const useSqlQuery = (connection?: duckdb.AsyncDuckDBConnection) => {
               const date = new Date(
                 (dates[i * 2 + 1] * Math.pow(2, 32) + dates[i * 2]) / 1000
               );
+              if (!temp.values[i]) {
+                temp.values[i] = [];
+              }
               temp.values[i].push(date.toISOString());
               vals.push(date);
             }

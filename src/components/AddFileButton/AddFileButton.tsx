@@ -37,7 +37,7 @@ const Icon = () => (
 );
 
 type AddFileButtonProps = {
-  onAddFile: (label: string, file: File) => Promise<void>;
+  onAddFiles: (label: string, file: FileList) => Promise<void>;
   labelPlaceholder: string;
   submitText: string;
   fileInputProps?: Partial<InputProps>;
@@ -49,7 +49,7 @@ type AddFileButtonProps = {
  * invoked with the File object and the label specified by the user
  */
 export const AddFileButton = ({
-  onAddFile,
+  onAddFiles,
   labelPlaceholder,
   submitText,
   fileInputProps,
@@ -58,21 +58,30 @@ export const AddFileButton = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [label, setLabel] = React.useState("");
-  const [file, setFile] = React.useState<File | undefined>();
+  const [files, setFiles] = React.useState<FileList | null>(null);
 
   // Reset 'label' and 'file' when the component opens
   React.useEffect(() => {
     if (isOpen) {
       setLabel("");
-      setFile(undefined);
+      setFiles(null);
     }
   }, [isOpen]);
 
   const addFile = () => {
-    if (label && file) {
-      onAddFile(label, file).finally(onClose);
+    if (label && files) {
+      onAddFiles(label, files).finally(onClose);
     }
   };
+
+  const fileNames: string[] = [];
+  // MDN documentation says that modern browsers wrap FileList with an array
+  // but TypeScript doesn't agree
+  const fileLength = files?.length || 0;
+  for (let i = 0; i < fileLength; i++) {
+    const name = files?.item(i)?.name;
+    name && fileNames.push(name);
+  }
   return (
     <>
       <IconButton
@@ -95,11 +104,12 @@ export const AddFileButton = ({
             opacity={0}
             id="file-upload"
             type="file"
-            onChange={(e) => setFile(e.target.files?.[0])}
+            multiple
+            onChange={(e) => setFiles(e.target.files)}
             {...fileInputProps}
           ></Input>
 
-          {file && <Text>File: {file.name}</Text>}
+          {files && <Text>File: {fileNames.join(', ')}</Text>}
           {
             // Style the FormLabel like a button.
             // The 'htmlFor' attribute will trigger the hidden file input
@@ -118,7 +128,7 @@ export const AddFileButton = ({
           <Button
             m={16}
             mb={0}
-            disabled={!(label && file)}
+            disabled={!(label && files)}
             onClick={addFile}
             colorScheme="yellow"
           >
