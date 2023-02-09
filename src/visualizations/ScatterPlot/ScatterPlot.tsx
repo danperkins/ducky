@@ -50,6 +50,7 @@ const BaseScatterPlot = (props: {
   return (
     <NivoScatterPlot<Dots>
       data={data}
+      colors={{ scheme: "spectral" }}
       theme={darkTheme}
       margin={{ top: 60, right: 60, bottom: 70, left: 90 }}
       xScale={{ type: "linear", min: "auto", max: "auto" }}
