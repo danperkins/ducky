@@ -4,15 +4,15 @@ import { DataType } from "apache-arrow";
 
 type QueryState =
   | {
-    state: "loading";
-  }
+      state: "loading";
+    }
   | {
-    state: "idle";
-  }
+      state: "idle";
+    }
   | {
-    state: "error";
-    error: Error;
-  };
+      state: "error";
+      error: Error;
+    };
 
 export type SqlResults = {
   /**
@@ -47,7 +47,7 @@ export const useSqlQuery = (connection?: duckdb.AsyncDuckDBConnection) => {
     }
     setLastQueryResults(undefined);
     setQueryState({ state: "loading" });
-    connection
+    return connection
       .query(sqlQuery)
       .then((table) => {
         console.log(table.schema);
@@ -99,6 +99,7 @@ export const useSqlQuery = (connection?: duckdb.AsyncDuckDBConnection) => {
         console.warn(temp);
         setLastQueryResults(temp);
         setQueryState({ state: "idle" });
+        return temp;
       })
       .catch((err) => setQueryState({ state: "error", error: err }));
   };

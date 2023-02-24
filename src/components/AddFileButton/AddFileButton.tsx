@@ -109,7 +109,7 @@ export const AddFileButton = ({
             {...fileInputProps}
           ></Input>
 
-          {files && <Text>File: {fileNames.join(', ')}</Text>}
+          {files && <Text>File: {fileNames.join(", ")}</Text>}
           {
             // Style the FormLabel like a button.
             // The 'htmlFor' attribute will trigger the hidden file input
