@@ -21,7 +21,8 @@ export const QueryEditor = ({
 
     const allFiles: { file: File; label: string }[] = [];
     for (let i = 0; i < files.length; i++) {
-      allFiles.push({ file: files.item(i)!, label: i + tempLabel });
+      const file = files.item(i)!;
+      allFiles.push({ file, label: file.name });
     }
 
     return Promise.all(
@@ -41,9 +42,9 @@ export const QueryEditor = ({
         const fileList = allFiles
           .map((fileData) => `'${fileData.label}'`)
           .join(", ");
-        onSubmitQuery(
-          `CREATE TABLE ${tableName} AS SELECT * FROM read_parquet([${fileList}]);`
-        );
+        const query = `CREATE TABLE ${tableName} AS SELECT * FROM read_parquet([${fileList}]);`;
+        console.log("Create Table Query", query);
+        onSubmitQuery(query);
       });
   };
   return (
